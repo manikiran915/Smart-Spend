@@ -7,14 +7,14 @@ import { categoryTotals, currentMonth, formatMoney, getTotals, monthLabel, month
 import { PageTitle, EmptyState } from '../components/UI.jsx';
 import { TransactionDialog } from '../components/TransactionDialog.jsx';
 
-const categoryColors = ['#89968A', '#A66F52', '#B96F65', '#687B6D', '#C6A68D', '#9A9C88', '#D6BCA7'];
+const categoryColors = Array.from({ length: 8 }, (_, index) => `var(--chart-${index + 1})`);
 
 function StatCard({ label, value, icon: Icon, tone, helper, change }) {
   return <article className={`stat-card ${tone}`}><div className="stat-top"><span>{label}</span><span className="stat-icon"><Icon size={18} /></span></div><div className="stat-value">{value}</div><div className="stat-foot"><span className="stat-change">{change}</span><span>{helper}</span></div></article>;
 }
 
 export default function Dashboard() {
-  const { transactions, budgets, recurring, currency } = useFinance();
+  const { transactions, budgets, currency } = useFinance();
   const [dialogOpen, setDialogOpen] = useState(false);
   const totals = getTotals(transactions);
   const monthTransactions = transactions.filter((item) => item.date.startsWith(currentMonth()));
@@ -24,7 +24,6 @@ export default function Dashboard() {
     ...budget,
     spent: monthTransactions.filter((item) => item.type === 'expense' && item.category === budget.category).reduce((sum, item) => sum + Number(item.amount), 0),
   })).sort((a, b) => b.spent / b.limit - a.spent / a.limit).slice(0, 4);
-  const upcoming = [...recurring].sort((a, b) => a.nextDate.localeCompare(b.nextDate)).slice(0, 3);
   const calendar = useMemo(() => {
     const now = new Date();
     const first = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -49,7 +48,7 @@ export default function Dashboard() {
       </div>
       <div className="row g-4 mt-1">
         <div className="col-xl-8"><section className="panel-card chart-panel"><div className="panel-heading"><div><h2>Income & spending</h2><p>Your last six months</p></div><div className="chart-legend"><span><i className="legend-income" /> Income</span><span><i className="legend-expense" /> Expenses</span></div></div>
-          <div className="chart-wrap"><ResponsiveContainer width="100%" height="100%"><AreaChart data={monthlyData} margin={{ left: 0, right: 12, top: 12, bottom: 0 }}><defs><linearGradient id="incomeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#89968A" stopOpacity={0.24} /><stop offset="95%" stopColor="#89968A" stopOpacity={0} /></linearGradient><linearGradient id="expenseFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#B96F65" stopOpacity={0.16} /><stop offset="95%" stopColor="#B96F65" stopOpacity={0} /></linearGradient></defs><CartesianGrid stroke="#E8E4DA" vertical={false} /><XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#8B8E88', fontSize: 12 }} dy={10} /><YAxis axisLine={false} tickLine={false} tick={{ fill: '#8B8E88', fontSize: 11 }} tickFormatter={(value) => formatMoney(value, currency, true)} width={54} /><Tooltip formatter={(value) => formatMoney(value, currency)} contentStyle={{ borderRadius: 12, border: '1px solid #E8E4DA' }} /><Area type="monotone" dataKey="Income" stroke="#89968A" strokeWidth={2.5} fill="url(#incomeFill)" /><Area type="monotone" dataKey="Expenses" stroke="#B96F65" strokeWidth={2.5} fill="url(#expenseFill)" /></AreaChart></ResponsiveContainer></div>
+          <div className="chart-wrap"><ResponsiveContainer width="100%" height="100%"><AreaChart data={monthlyData} margin={{ left: 0, right: 12, top: 12, bottom: 0 }}><defs><linearGradient id="incomeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--sage)" stopOpacity={0.24} /><stop offset="95%" stopColor="var(--sage)" stopOpacity={0} /></linearGradient><linearGradient id="expenseFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--expense)" stopOpacity={0.16} /><stop offset="95%" stopColor="var(--expense)" stopOpacity={0} /></linearGradient></defs><CartesianGrid stroke="var(--border)" vertical={false} /><XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: 'var(--muted)', fontSize: 12 }} dy={10} /><YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--muted)', fontSize: 11 }} tickFormatter={(value) => formatMoney(value, currency, true)} width={54} /><Tooltip formatter={(value) => formatMoney(value, currency)} contentStyle={{ borderRadius: 12, border: '1px solid var(--border)', background: 'var(--card)', color: 'var(--charcoal)' }} /><Area type="monotone" dataKey="Income" stroke="var(--sage)" strokeWidth={2.5} fill="url(#incomeFill)" /><Area type="monotone" dataKey="Expenses" stroke="var(--expense)" strokeWidth={2.5} fill="url(#expenseFill)" /></AreaChart></ResponsiveContainer></div>
         </section></div>
         <div className="col-xl-4"><section className="panel-card category-panel"><div className="panel-heading"><div><h2>Where it went</h2><p>This month's expenses</p></div><Link to="/app/analytics" className="text-icon-link" aria-label="View analytics"><ArrowRight size={17} /></Link></div>
           {spending.length ? <><div className="donut-wrap"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={spending} dataKey="value" nameKey="name" innerRadius="66%" outerRadius="88%" paddingAngle={4} stroke="none">{spending.map((item, index) => <Cell key={item.name} fill={categoryColors[index % categoryColors.length]} />)}</Pie><Tooltip formatter={(value) => formatMoney(value, currency)} /></PieChart></ResponsiveContainer><div className="donut-center"><strong>{formatMoney(totals.expenses, currency, true)}</strong><span>total spent</span></div></div><div className="category-list">{spending.slice(0, 4).map((item, index) => <div className="category-row" key={item.name}><span className="category-dot" style={{ backgroundColor: categoryColors[index % categoryColors.length] }} /><span className="category-name">{item.name}</span><strong>{formatMoney(item.value, currency)}</strong></div>)}</div></> : <EmptyState title="Nothing spent yet" description="Add an expense to see your breakdown." action={<button className="btn btn-sm btn-outline-secondary" onClick={() => setDialogOpen(true)}>Add expense</button>} />}
@@ -65,9 +64,6 @@ export default function Dashboard() {
       </div>
       <div className="row g-4 mt-1 mb-4">
         <div className="col-xl-7"><section className="panel-card calendar-panel"><div className="panel-heading"><div><h2>Your spending calendar</h2><p>Little moments through {calendar.label}</p></div></div><div className="mini-calendar"><div className="calendar-weekdays">{['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => <span key={`${day}-${i}`}>{day}</span>)}</div><div className="calendar-days">{calendar.cells.map((day, index) => <span key={index} className={`calendar-day ${day && calendar.grouped[day] ? 'has-activity' : ''} ${day === new Date().getDate() ? 'today' : ''}`} title={day && calendar.grouped[day] ? `${calendar.grouped[day]} transactions` : undefined}>{day || ''}{day && calendar.grouped[day] && <i />}</span>)}</div></div></section></div>
-        <div className="col-xl-5"><section className="panel-card"><div className="panel-heading"><div><h2>Coming up</h2><p>Your next scheduled payments</p></div><Link to="/app/recurring" className="text-link">See all <ArrowRight size={15} /></Link></div>
-          {upcoming.length ? <div className="upcoming-list">{upcoming.map((item) => <div className="upcoming-row" key={item.id}><div className="upcoming-date"><span>{new Date(`${item.nextDate}T12:00:00`).toLocaleDateString(undefined, { month: 'short' })}</span><strong>{new Date(`${item.nextDate}T12:00:00`).getDate()}</strong></div><div className="upcoming-copy"><strong>{item.name}</strong><span>{item.category} · {item.frequency}</span></div><strong>{formatMoney(item.amount, currency)}</strong></div>)}</div> : <EmptyState title="Nothing scheduled" description="Add a recurring payment to see it here." action={<Link to="/app/recurring" className="btn btn-sm btn-outline-secondary">Add payment</Link>} />}
-        </section></div>
       </div>
       {dialogOpen && <TransactionDialog onClose={() => setDialogOpen(false)} />}
     </div>

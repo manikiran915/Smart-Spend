@@ -50,7 +50,7 @@ export default function AuthPage({ mode }) {
           <div className="auth-icon">{isAdmin ? <ShieldCheck size={20} /> : <CircleDollarSign size={20} />}</div>
           <div className="eyebrow">{isAdmin ? 'ADMINISTRATOR ACCESS' : isRegister ? 'YOUR PERSONAL WORKSPACE' : 'WELCOME BACK'}</div>
           <h1>{isAdmin ? 'Admin sign in' : isRegister ? 'Create your account' : 'User sign in'}</h1>
-          <p>{isAdmin ? 'Sign in to review accounts and manage SmartSpend access.' : isRegister ? 'Your budgets, transactions, and goals stay private to your account on this device.' : 'Pick up where you left off with your personal finances.'}</p>
+          <p>{isAdmin ? 'Sign in to review accounts and manage SmartSpend access.' : isRegister ? 'Your budgets and transactions stay private to your account on this device.' : 'Pick up where you left off with your personal finances.'}</p>
         </div>
         <form className="auth-form" onSubmit={submit}>
           {isRegister && <div><label className="form-label" htmlFor="auth-name">Full name</label><input id="auth-name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} maxLength="70" autoComplete="name" required /></div>}

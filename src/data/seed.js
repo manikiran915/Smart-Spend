@@ -1,11 +1,5 @@
 const localDateString = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-const dateOffset = (days) => {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  return localDateString(date);
-};
-
 const currentMonthDate = (day) => {
   const date = new Date();
   date.setDate(day);
@@ -32,17 +26,8 @@ export const seedData = {
     { id: 'b4', category: 'Shopping', limit: 250 },
     { id: 'b5', category: 'Wellness', limit: 120 },
   ],
-  goals: [
-    { id: 'g1', name: 'A little room to roam', target: 5000, saved: 2150, monthlySavings: 350, dueDate: '' },
-    { id: 'g2', name: 'Rainy day fund', target: 8000, saved: 4800, monthlySavings: 500, dueDate: '' },
-  ],
-  recurring: [
-    { id: 'r1', name: 'Apartment rent', amount: 1280, category: 'Housing', frequency: 'Monthly', nextDate: dateOffset(5) },
-    { id: 'r2', name: 'Music subscription', amount: 11, category: 'Subscriptions', frequency: 'Monthly', nextDate: dateOffset(9) },
-    { id: 'r3', name: 'Internet', amount: 55, category: 'Utilities', frequency: 'Monthly', nextDate: dateOffset(14) },
-  ],
   categories: ['Housing', 'Groceries', 'Dining', 'Transport', 'Shopping', 'Wellness', 'Subscriptions', 'Utilities', 'Entertainment', 'Salary', 'Freelance', 'Other'],
   profile: { name: 'Alex Morgan', email: 'alex.morgan@example.com' },
   currency: 'USD',
-  theme: 'light',
+  theme: 'forest',
 };

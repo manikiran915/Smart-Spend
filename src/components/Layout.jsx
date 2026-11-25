@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Activity, ArrowLeftRight, BarChart3, CreditCard, LayoutDashboard, LogOut, Menu, Plus, Settings, Sparkles, Target, Wallet, X } from 'lucide-react';
+import { Activity, ArrowLeftRight, BarChart3, LayoutDashboard, LogOut, Menu, Plus, Settings, Sparkles, Wallet, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinance } from '../context/FinanceContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -13,8 +13,6 @@ const navigation = [
   { to: '/app/transactions', label: 'Transactions', icon: ArrowLeftRight },
   { to: '/app/budgets', label: 'Budgets', icon: Wallet },
   { to: '/app/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/app/goals', label: 'Savings goals', icon: Target },
-  { to: '/app/recurring', label: 'Recurring', icon: CreditCard },
 ];
 
 export default function Layout() {
@@ -38,7 +36,7 @@ export default function Layout() {
         <nav className="sidebar-nav">
           {navigation.map(({ to, label, icon: Icon, end }) => (
             <NavLink key={to} to={to} end={end} onClick={() => setMenuOpen(false)} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-              <Icon size={18} strokeWidth={1.8} /><span>{label}</span>
+              <Icon className="sidebar-nav-icon" size={23} strokeWidth={2} /><span>{label}</span>
             </NavLink>
           ))}
         </nav>
@@ -50,7 +48,7 @@ export default function Layout() {
         </div>
         <div className="sidebar-bottom">
           <NavLink to="/app/settings" onClick={() => setMenuOpen(false)} className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-            <Settings size={18} strokeWidth={1.8} /><span>Settings</span>
+            <Settings className="sidebar-nav-icon" size={23} strokeWidth={2} /><span>Settings</span>
           </NavLink>
           <div className="profile-chip">
             <div className="avatar">{firstName.slice(0, 1).toUpperCase()}</div>

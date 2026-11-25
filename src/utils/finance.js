@@ -45,6 +45,25 @@ export function monthlyChartData(transactions) {
   });
 }
 
+export function dailyChartData(transactions, month) {
+  const [year, monthNumber] = month.split('-').map(Number);
+  const daysInMonth = new Date(year, monthNumber, 0).getDate();
+  const dailyTotals = new Map();
+
+  transactions.forEach((item) => {
+    if (!item.date.startsWith(`${month}-`)) return;
+    const totals = dailyTotals.get(item.date) || { Income: 0, Expenses: 0 };
+    if (item.type === 'income') totals.Income += Number(item.amount);
+    if (item.type === 'expense') totals.Expenses += Number(item.amount);
+    dailyTotals.set(item.date, totals);
+  });
+
+  return Array.from({ length: daysInMonth }, (_, index) => {
+    const date = `${month}-${String(index + 1).padStart(2, '0')}`;
+    return { date, ...(dailyTotals.get(date) || { Income: 0, Expenses: 0 }) };
+  });
+}
+
 export function categoryTotals(transactions) {
   const totals = transactions.filter((item) => item.type === 'expense').reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + Number(item.amount);

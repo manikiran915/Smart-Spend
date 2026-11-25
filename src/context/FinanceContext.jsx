@@ -33,9 +33,10 @@ function FinanceWorkspace({ user, children }) {
     setData({
       ...seedData,
       profile: { name: user?.name || '', email: user?.email || '' },
+      theme: data.theme,
     });
     notify('Your demo data has been restored.');
-  }, [notify, user]);
+  }, [data.theme, notify, user]);
 
   const clearData = useCallback(() => {
     setData({
