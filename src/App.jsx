@@ -1,11 +1,10 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
-import { RequireAdmin, RequireUser } from './components/RouteGuards.jsx';
+import { RequireUser } from './components/RouteGuards.jsx';
 import { useFinance } from './context/FinanceContext.jsx';
 import { getTheme, getThemeId } from './theme.js';
 import AuthPage from './pages/AuthPage.jsx';
-import AdminDashboard from './pages/AdminDashboard.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'));
@@ -30,9 +29,6 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<AuthPage mode="user" />} />
         <Route path="/register" element={<AuthPage mode="register" />} />
-        <Route path="/admin/login" element={<AuthPage mode="admin" />} />
-        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="/admin/dashboard" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
         <Route path="/app" element={<RequireUser><Layout /></RequireUser>}>
           <Route index element={<Dashboard />} />
           <Route path="transactions" element={<Transactions />} />

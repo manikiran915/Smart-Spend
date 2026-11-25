@@ -12,7 +12,7 @@ export default function Landing() {
     <div className="landing-page">
       <nav className="landing-nav container">
         <Link className="brand-lockup" to="/"><span className="brand-symbol"><CircleDollarSign size={20} /></span><span>smart<span>spend</span></span></Link>
-        <div className="d-flex align-items-center gap-3"><a className="landing-nav-link" href="#how-it-works">How it works</a><Link className="landing-login-link" to="/login">User login</Link><Link className="btn btn-primary" to="/admin/login">Admin login <ArrowRight size={16} /></Link></div>
+        <div className="d-flex align-items-center gap-3"><a className="landing-nav-link" href="#how-it-works">How it works</a><Link className="landing-login-link" to="/login">User login</Link></div>
       </nav>
       <section className="hero-section container">
         <div className="hero-copy">
